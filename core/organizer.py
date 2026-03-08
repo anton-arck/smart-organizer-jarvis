@@ -11,10 +11,12 @@ class FileOrganizer:
         self.categories = {
             "PDFs": [".pdf"],
             "Imagenes": [".jpg", ".jpeg", ".png", ".gif", ".svg"],
-            "Documentos_Office": [".docx", ".xlsx", ".pptx"],
+            "Audio": [".mp3", ".wav", ".ogg", ".flac"], # <-- Añadido
+            "Documentos": [".docx", ".xlsx", ".pptx", ".txt"],
             "Scripts": [".py", ".js", ".sh", ".fish"],
             "Comprimidos": [".zip", ".rar", ".7z"]
         }
+
 
     def _get_category(self, extension):
         for category, extensions in self.categories.items():
@@ -24,10 +26,10 @@ class FileOrganizer:
 
     def organize(self):
         if not self.watch_path.exists():
-            return 0, "Error: No se encontró la carpeta Downloads."
-
+        # En lugar de devolver una tupla, imprimimos el error y devolvemos 0
+            print(f"ERROR: No se encuentra la ruta {self.watch_path}")
+            return 0
         moved_count = 0
-        
         for item in self.watch_path.iterdir():
             # Solo procesar archivos, ignorar carpetas y archivos ocultos
             if item.is_file() and not item.name.startswith('.'):

@@ -3,21 +3,23 @@ from core.organizer import FileOrganizer
 from core.monitor import Sentinel
 
 def main(page: ft.Page):
-    # --- CONFIGURACIÓN DE PÁGINA ---
     page.title = "J.A.R.V.I.S. OS"
-    page.window_bgcolor = "#050a0f"
+    page.bgcolor = "#050a0f"  # Color sólido para evitar parpadeos en Wayland
+    page.theme_mode = ft.ThemeMode.DARK
+    
+    # Ajustes de ventana para Tiling Managers
     page.window_width = 400
     page.window_height = 550
-    page.window_resizable = False
     
     organizer = FileOrganizer()
-    log_column = ft.Column(scroll=ft.ScrollMode.ALWAYS, height=200)
+    # Usamos expand=True para que el log ocupe el espacio disponible en el tile
+    log_column = ft.Column(scroll=ft.ScrollMode.ALWAYS, expand=True)
 
-    # Función robusta para actualizar la UI desde hilos externos
     def add_log(message):
-        print(f"Intentando actualizar UI con: {message}") # Debug extra
-        log_column.controls.insert(0, ft.Text(f"> {message}", color="#00ffcc", size=12, font_family="monospace"))
-        # IMPORTANTE: En versiones nuevas de Flet, update() es hilo-seguro
+        log_column.controls.insert(
+            0, 
+            ft.Text(f"> {message}", color="#00ffcc", size=12, font_family="monospace")
+        )
         page.update()
 
     # --- ACTIVACIÓN DEL CENTINELA ---
@@ -32,45 +34,25 @@ def main(page: ft.Page):
         add_log(f"MANUAL: {count} archivos organizados.")
 
     # --- INTERFAZ ---
+    
     page.add(
+        ft.Text("J.A.R.V.I.S. | MODO WEB", size=25, color="#00ffcc", weight="bold"),
+        ft.FilledButton(
+            "ORGANIZAR AHORA", 
+            on_click=on_manual_click,
+            style=ft.ButtonStyle(bgcolor="#00ffcc", color="black")
+        ),
         ft.Container(
-            content=ft.Column([
-                ft.Row([
-                    ft.Icon("shield", color="#00ffcc"),
-                    ft.Text("SISTEMA_ACTIVO", color="#00ffcc", weight="bold")
-                ], alignment=ft.MainAxisAlignment.CENTER),
-                
-                ft.Divider(color="#00ffcc", thickness=1),
-                ft.Text("JARVIS: AGENTE DE DESCARGAS", size=22, weight="black", text_align="center", color="white"),
-                
-                ft.FilledButton(
-                    "ORDENAR AHORA",
-                    on_click=on_manual_click,
-                    style=ft.ButtonStyle(
-                        color="black",
-                        bgcolor="#00ffcc",
-                        shape=ft.RoundedRectangleBorder(radius=0)
-                    ),
-                    width=400
-                ),
-                
-                ft.Text("REPORTE DE MISIÓN:", size=14, color="gray", weight="bold"),
-                
-                ft.Container(
-                    content=log_column,
-                    padding=10,
-                    border=ft.Border.all(1, "#1a2a3a"),
-                    bgcolor="#0a141e",
-                    expand=True
-                ),
-                
-                ft.Text("v1.5 - PROTOCOLO CENTINELA ACTIVADO", size=10, color="#1a2a3a")
-            ]),
-            padding=20,
-            expand=True
+            content=log_column,
+            height=400, # Altura fija para asegurar visibilidad en web
+            border=ft.Border.all(1, "#1a2a3a"),
+            bgcolor="#0a141e",
+            padding=10,
+            border_radius=5
         )
     )
 
 if __name__ == "__main__":
-    # Asegúrate de usar ft.app(main) aquí abajo
-    ft.app(main)
+    # 'view' puede ser ft.AppView.WEB_BROWSER para abrir el navegador por defecto
+    # 'port' te permite elegir en qué puerto de tu localhost correrá Jarvis
+    ft.app(target=main, view=ft.AppView.WEB_BROWSER, port=8550)
