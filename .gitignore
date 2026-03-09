@@ -4,11 +4,7 @@ __pycache__/
 .DS_Store
 test_folder/
 *.exe
-
-# Ignorar modelos pesados de Piper (Daniela AR)
 models/*.onnx
 models/*.json
-
-# Ignorar archivos temporales de audio
 models/*.wav
 core/__pycache__/
