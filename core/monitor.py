@@ -44,37 +44,48 @@ class DownloadHandler(FileSystemEventHandler):
         else:
             print(f"[!] Modelo no encontrado en: {abs_model}")
 
- 
-
     def on_created(self, event):
         if event.is_directory: return
         
-        time.sleep(2)
+        time.sleep(2) # Esperar a que la descarga termine
+        
+        # Detectar qué tipo de archivo entró para elegir el color
+        ext = os.path.splitext(event.src_path)[1].lower()
+        
+        if ext in ['.wav', '.mp3', '.flac']:
+            log_type = "music"
+        elif ext in ['.py', '.pi', '.js', '.html']:
+            log_type = "code"
+        elif ext in ['.pdf', '.docx', '.txt', '.xlsx']:
+            log_type = "docs"
+        elif ext in ['.png', '.jpg', '.jpeg', '.gif', '.svg']:
+            log_type = "image"
+        elif ext in ['.mp4', '.mkv', '.mov', '.avi']:
+            log_type = "video"
+        else:
+            log_type = "system"
+
         count = self.organizer.organize()
         
         if count > 0:
-            # Reporte en la UI web
-            msg = f"CENTINELA: {count} archivo(s) procesado(s)."
-            self.callback(msg)
+            msg = f"Se han detectado y organizado {count} elementos."
+            self.callback(msg, type=log_type)
             
-            # --- PERSONALIDAD DE JARVIS ---
-            frases = [
-                f"Todo en orden, Jefe. He clasificado {count} elementos nuevos.",
-                f"Archivos organizados. He puesto las {count} descargas en sus carpetas correspondientes.",
-                f"Protocolo de limpieza completado. El sistema está optimizado, Jefe.",
-                f"He detectado {count} archivos. Ya están donde pertenecen."
-                           ]
-            self.speak(random.choice(frases))
+            # Frase para Claude (MX)
+            self.speak(f"Jefe, he procesado nuevos archivos de tipo {log_type}.")
+
+  
 
 # ... (Clase Sentinel sigue igual)
+
 class Sentinel:
     def __init__(self, organizer, callback):
         self.observer = Observer()
+        # El callback que recibe aquí ya es 'sync_add_log' de main.py
         self.handler = DownloadHandler(organizer, callback)
         self.path = organizer.watch_path
 
     def start(self):
-        # Configuramos el observador para mirar la carpeta de Descargas
         self.observer.schedule(self.handler, str(self.path), recursive=False)
         self.observer.start()
 
