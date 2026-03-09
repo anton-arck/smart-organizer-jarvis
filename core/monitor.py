@@ -22,7 +22,7 @@ class DownloadHandler(FileSystemEventHandler):
                 # Ejecutamos piper-tts sin usar 'echo' ni '|' de shell
                 # Pasamos el texto directamente a través de stdin.write
                 process = subprocess.Popen(
-                    ['piper-tts', '--model', abs_model,'--length_scale','1.15', '--output_file', temp_wav],
+                    ['piper-tts', '--model', abs_model,'--length_scale','1.1', '--output_file', temp_wav],
                     stdin=subprocess.PIPE,
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.DEVNULL,
@@ -59,9 +59,9 @@ class DownloadHandler(FileSystemEventHandler):
             
             # --- PERSONALIDAD DE JARVIS ---
             frases = [
-                f"Todo en orden, Señor. He clasificado {count} elementos nuevos.",
+                f"Todo en orden, Jefe. He clasificado {count} elementos nuevos.",
                 f"Archivos organizados. He puesto las {count} descargas en sus carpetas correspondientes.",
-                f"Protocolo de limpieza completado. El sistema está optimizado, amo.",
+                f"Protocolo de limpieza completado. El sistema está optimizado, Jefe.",
                 f"He detectado {count} archivos. Ya están donde pertenecen."
                            ]
             self.speak(random.choice(frases))

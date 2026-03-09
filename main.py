@@ -1,9 +1,10 @@
 import flet as ft
 from core.organizer import FileOrganizer
 from core.monitor import Sentinel
+import threading
 
 def main(page: ft.Page):
-    page.title = "J.A.R.V.I.S. OS"
+    page.title = "F.R.I.D.A.Y. OS"
     page.bgcolor = "#050a0f"  # Color sólido para evitar parpadeos en Wayland
     page.theme_mode = ft.ThemeMode.DARK
     
@@ -26,6 +27,13 @@ def main(page: ft.Page):
     sentinel = Sentinel(organizer, add_log)
     sentinel.start()
 
+    def delayed_greeting():
+        saludo = "Sistemas de monitoreo activos. Su laptop esta optimizada para empezar este dia."
+        sentinel.handler.speak(saludo)
+
+    # Lanzamos el saludo en un hilo independiente
+    threading.Thread(target=delayed_greeting, daemon=True).start()
+
     # Mover esto AQUÍ ADENTRO soluciona el NameError
     page.on_close = lambda _: sentinel.stop()
 
@@ -36,7 +44,7 @@ def main(page: ft.Page):
     # --- INTERFAZ ---
     
     page.add(
-        ft.Text("J.A.R.V.I.S. | MODO WEB", size=25, color="#00ffcc", weight="bold"),
+        ft.Text("F.R.I.D.A.Y. | MODO WEB", size=25, color="#00ffcc", weight="bold"),
         ft.FilledButton(
             "ORGANIZAR AHORA", 
             on_click=on_manual_click,
