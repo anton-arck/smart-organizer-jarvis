@@ -14,7 +14,8 @@ class FileOrganizer:
             "Audio": [".mp3", ".wav", ".ogg", ".flac"], # <-- Añadido
             "Documentos": [".docx", ".xlsx", ".pptx", ".txt"],
             "Scripts": [".py", ".js", ".sh", ".fish"],
-            "Comprimidos": [".zip", ".rar", ".7z"]
+            "Comprimidos": [".zip", ".rar", ".7z"],
+            "Video": [".mp4",".mkv",".mpeg"]
         }
 
 

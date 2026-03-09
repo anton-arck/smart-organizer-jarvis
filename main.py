@@ -20,7 +20,7 @@ async def main(page: ft.Page):
 
     async def add_log(message, type="system"):
         colors = {
-            "system": "#00ffcc", "music": "#ff00ff", "code": "#00ff00",
+            "system": "#00ffcc", "musica": "#ff00ff", "code": "#00ff00",
             "docs": "#ffffff", "image": "#0077ff", "video": "#ff4400", "manual": "#ffcc00"
         }
         selected_color = colors.get(type, "#ffffff")
