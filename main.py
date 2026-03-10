@@ -20,9 +20,15 @@ async def main(page: ft.Page):
 
     async def add_log(message, type="system"):
         colors = {
-            "system": "#00ffcc", "musica": "#ff00ff", "code": "#00ff00",
-            "docs": "#ffffff", "image": "#0077ff", "video": "#ff4400", "manual": "#ffcc00"
+            "system": "#00ffcc", 
+            "music": "#ff00ff", 
+            "code": "#00ff00",
+            "docs": "#ffffff", 
+            "image": "#0077ff", 
+            "video": "#ff4400", 
+            "manual": "#ffcc00"
         }
+
         selected_color = colors.get(type, "#ffffff")
         new_log = ft.Text("", color=selected_color, size=13, font_family="monospace")
         log_column.controls.insert(0, new_log)
@@ -54,10 +60,12 @@ async def main(page: ft.Page):
 
     # Corregido: Usamos handle_close para evitar el AttributeError y errores de GTK
     def handle_close(e):
-        sentinel.stop()
-        page.window_destroy()
+        try:
+            sentinel.stop()
+            page.window.close() # Versión compatible 2026
+        except:
+            pass
 
-    page.on_close = handle_close
 
     page.add(
         ft.Text("F.R.I.D.A.Y. | CORE", size=25, color="#00ffcc", weight="bold"),
@@ -77,4 +85,4 @@ async def main(page: ft.Page):
     )
 
 if __name__ == "__main__":
-    ft.app(target=main)
+    ft.run(main)

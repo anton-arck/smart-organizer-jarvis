@@ -25,6 +25,23 @@ class FileOrganizer:
                 return category
         return None # No mover archivos desconocidos por ahora
 
+    def move_specific_file(self, file_path):
+        """Mueve un archivo específico basándose en su ruta absoluta."""
+        item = Path(file_path)
+        if not item.exists(): return False
+        
+        category = self._get_category(item.suffix)
+        if category:
+            dest_dir = self.watch_path / category
+            dest_dir.mkdir(parents=True, exist_ok=True)
+            try:
+                # Usamos str() para asegurar compatibilidad en Arch
+                shutil.move(str(item), str(dest_dir / item.name))
+                return True
+            except Exception as e:
+                print(f"[!] Error crítico en movimiento: {e}")
+        return False
+
     def organize(self):
         if not self.watch_path.exists():
         # En lugar de devolver una tupla, imprimimos el error y devolvemos 0
