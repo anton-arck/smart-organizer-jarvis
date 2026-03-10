@@ -8,7 +8,7 @@ from core.utils.validator import FileValidator
 from core.utils.processor import EventProcessor # Nuevo import
 
 class DownloadHandler(FileSystemEventHandler):
-    def __init__(self, organizer, callback):
+    def __init__(self, organizer, callback,animate_func):
         self.organizer = organizer
         self.callback = callback
         self.model_path = "models/friday.onnx"
@@ -17,7 +17,8 @@ class DownloadHandler(FileSystemEventHandler):
         self.network = NetworkChecker()
         self.validator = FileValidator()
         self.processor = EventProcessor(
-            organizer, callback, self.network, self.validator, self.speak
+            organizer, callback, self.network, self.validator, self.speak,
+            on_success_callback=animate_func
         )
 
     def speak(self, text):
@@ -42,9 +43,9 @@ class DownloadHandler(FileSystemEventHandler):
         self.processor.process_new_file(event.src_path)
 
 class Sentinel:
-    def __init__(self, organizer, callback):
+    def __init__(self, organizer, callback,animate_func):
         self.observer = Observer()
-        self.handler = DownloadHandler(organizer, callback)
+        self.handler = DownloadHandler(organizer, callback,animate_func)
         self.path = organizer.watch_path
 
     def start(self):
